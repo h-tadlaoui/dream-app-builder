@@ -27,11 +27,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<InterfaceSelector />} />
-          <Route path="/interface-1" element={<IndexOption1 />} />
-          <Route path="/interface-2" element={<IndexOption2 />} />
-          <Route path="/interface-3" element={<IndexOption3 />} />
-          <Route path="/interface-4" element={<IndexOption4 />} />
+          <Route path="/" element={<IndexOption3 />} />
           <Route path="/report-lost" element={<ReportLost />} />
           <Route path="/report-found" element={<ReportFound />} />
           <Route path="/report-anonymous" element={<ReportAnonymous />} />
