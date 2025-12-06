@@ -107,7 +107,11 @@ const BrowseLost = () => {
         {/* Items Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {lostItems.map((item) => (
-            <Card key={item.id} className="p-4 hover:shadow-lg transition-shadow cursor-pointer">
+            <Card 
+              key={item.id} 
+              className="p-4 hover:shadow-lg transition-shadow cursor-pointer"
+              onClick={() => navigate(`/item/${item.id}?type=lost`)}
+            >
               <div className="space-y-3">
                 <div className="flex items-start justify-between">
                   <div>
@@ -133,7 +137,15 @@ const BrowseLost = () => {
                   </div>
                 </div>
 
-                <Button variant="outline" size="sm" className="w-full">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/item/${item.id}?type=lost`);
+                  }}
+                >
                   View Details
                 </Button>
               </div>

@@ -17,6 +17,7 @@ import BrowseFound from "./pages/BrowseFound";
 import BrowseAnonymous from "./pages/BrowseAnonymous";
 import Browse from "./pages/Browse";
 import History from "./pages/History";
+import ItemDetail from "./pages/ItemDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/browse-found" element={<BrowseFound />} />
           <Route path="/browse-anonymous" element={<BrowseAnonymous />} />
           <Route path="/history" element={<History />} />
+          <Route path="/item/:id" element={<ItemDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

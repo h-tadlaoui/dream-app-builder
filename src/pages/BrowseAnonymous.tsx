@@ -90,18 +90,22 @@ const BrowseAnonymous = () => {
         {/* Items Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {anonymousItems.map((item) => (
-            <Card key={item.id} className="p-4 hover:shadow-lg transition-shadow cursor-pointer border-anonymous/30">
+            <Card 
+              key={item.id} 
+              className="p-4 hover:shadow-lg transition-shadow cursor-pointer border-[hsl(var(--anonymous-color))]/30"
+              onClick={() => navigate(`/item/${item.id}?type=anonymous`)}
+            >
               <div className="space-y-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-lg bg-anonymous/10 flex items-center justify-center">
-                      <Shield className="w-5 h-5 text-anonymous" />
+                    <div className="w-10 h-10 rounded-lg bg-[hsl(var(--anonymous-color))]/10 flex items-center justify-center">
+                      <Shield className="w-5 h-5 text-[hsl(var(--anonymous-color))]" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg">{item.category}</h3>
                       <Badge 
                         variant={item.status === "Active" ? "outline" : "secondary"} 
-                        className="mt-1 border-anonymous/30"
+                        className="mt-1 border-[hsl(var(--anonymous-color))]/30"
                       >
                         {item.status}
                       </Badge>
@@ -111,11 +115,11 @@ const BrowseAnonymous = () => {
 
                 <div className="space-y-2">
                   <div className="flex items-start gap-2 text-sm">
-                    <MapPin className="w-4 h-4 text-anonymous mt-0.5" />
+                    <MapPin className="w-4 h-4 text-[hsl(var(--anonymous-color))] mt-0.5" />
                     <span className="text-muted-foreground">{item.location}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Clock className="w-4 h-4 text-anonymous" />
+                    <Clock className="w-4 h-4 text-[hsl(var(--anonymous-color))]" />
                     <span>
                       {new Date(item.date).toLocaleDateString()} at {item.time}
                     </span>
@@ -130,7 +134,11 @@ const BrowseAnonymous = () => {
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="w-full border-anonymous/30 hover:bg-anonymous hover:text-anonymous-foreground"
+                    className="w-full border-[hsl(var(--anonymous-color))]/30 hover:bg-[hsl(var(--anonymous-color))] hover:text-white"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/item/${item.id}?type=anonymous`);
+                    }}
                   >
                     Contact Finder
                   </Button>

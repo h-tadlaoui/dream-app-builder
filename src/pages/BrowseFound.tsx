@@ -107,7 +107,11 @@ const BrowseFound = () => {
         {/* Items Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {foundItems.map((item) => (
-            <Card key={item.id} className="p-4 hover:shadow-lg transition-shadow cursor-pointer border-primary/30">
+            <Card 
+              key={item.id} 
+              className="p-4 hover:shadow-lg transition-shadow cursor-pointer border-primary/30"
+              onClick={() => navigate(`/item/${item.id}?type=found`)}
+            >
               <div className="space-y-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
@@ -141,7 +145,14 @@ const BrowseFound = () => {
                   </div>
                 </div>
 
-                <Button size="sm" className="w-full">
+                <Button 
+                  size="sm" 
+                  className="w-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/item/${item.id}?type=found`);
+                  }}
+                >
                   Claim This Item
                 </Button>
               </div>
