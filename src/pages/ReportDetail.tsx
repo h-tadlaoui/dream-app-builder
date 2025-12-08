@@ -17,16 +17,23 @@ interface MatchInfo {
   contactPhone?: string;
 }
 
+interface ClaimInfo {
+  claimerId: string;
+  claimerName: string;
+  claimStatus: "pending" | "approved" | "denied";
+}
+
 interface ReportItem {
   id: string;
-  type: "lost" | "found";
+  type: "lost" | "found" | "anonymous";
   category: string;
   description: string;
   location: string;
   date: string;
-  status: "Active" | "Matched" | "Recovered";
+  status: "Active" | "Matched" | "Recovered" | "Claimed";
   image?: string;
   matchInfo?: MatchInfo;
+  claimInfo?: ClaimInfo;
 }
 
 const ReportDetail = () => {
@@ -90,6 +97,31 @@ const ReportDetail = () => {
       status: "Active",
       image: "https://images.unsplash.com/photo-1582139329536-e7284fece509?w=400&h=300&fit=crop",
     },
+    {
+      id: "anon-1",
+      type: "anonymous",
+      category: "Umbrella",
+      description: "Black umbrella with wooden handle",
+      location: "Bus Stop on Main St",
+      date: "2024-03-17",
+      status: "Active",
+      image: "https://images.unsplash.com/photo-1534309466160-70b22cc6252c?w=400&h=300&fit=crop",
+    },
+    {
+      id: "anon-2",
+      type: "anonymous",
+      category: "Bag",
+      description: "Blue backpack with laptop inside",
+      location: "Train Station",
+      date: "2024-03-13",
+      status: "Claimed",
+      image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop",
+      claimInfo: {
+        claimerId: "user-789",
+        claimerName: "Mike R.",
+        claimStatus: "approved",
+      },
+    },
   ];
 
   const item = allReports.find(r => r.id === id);
@@ -125,6 +157,8 @@ const ReportDetail = () => {
         return <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Matched</Badge>;
       case "Recovered":
         return <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">Recovered</Badge>;
+      case "Claimed":
+        return <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20">Claimed</Badge>;
       default:
         return <Badge variant="secondary">Not Matched Yet</Badge>;
     }
@@ -190,8 +224,8 @@ const ReportDetail = () => {
         {/* Item Type & Status */}
         <Card className="p-4">
           <div className="flex items-center gap-2 flex-wrap mb-4">
-            <Badge variant={item.type === "lost" ? "destructive" : "default"}>
-              {item.type === "lost" ? "Lost Item" : "Found Item"}
+            <Badge variant={item.type === "lost" ? "destructive" : item.type === "anonymous" ? "outline" : "default"}>
+              {item.type === "lost" ? "Lost Item" : item.type === "anonymous" ? "Anonymous Item" : "Found Item"}
             </Badge>
             {renderStatusBadge(item.status)}
           </div>
@@ -211,15 +245,20 @@ const ReportDetail = () => {
           </div>
         </Card>
 
-        {/* Match Status Section */}
+        {/* Match/Claim Status Section */}
         <Card className="p-4">
-          <h3 className="font-semibold mb-3">Match Status</h3>
+          <h3 className="font-semibold mb-3">{item.type === "anonymous" ? "Claim Status" : "Match Status"}</h3>
           <div className="flex items-center gap-2 mb-2">
             {renderStatusBadge(item.status)}
           </div>
-          {item.status === "Active" && (
+          {item.status === "Active" && item.type !== "anonymous" && (
             <p className="text-sm text-muted-foreground">
               No matches found yet. Use AI matching to find potential matches.
+            </p>
+          )}
+          {item.status === "Active" && item.type === "anonymous" && (
+            <p className="text-sm text-muted-foreground">
+              Waiting for someone to claim this item.
             </p>
           )}
         </Card>
@@ -292,6 +331,32 @@ const ReportDetail = () => {
           </Card>
         )}
 
+        {/* Claim Info Section - For anonymous items */}
+        {item.type === "anonymous" && item.claimInfo && (
+          <Card className="p-4">
+            <h3 className="font-semibold mb-3">Claim Information</h3>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <User className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <p className="font-medium">{item.claimInfo.claimerName}</p>
+                <p className="text-sm text-muted-foreground">Claimed this item</p>
+              </div>
+            </div>
+            <Badge className={
+              item.claimInfo.claimStatus === "approved" 
+                ? "bg-green-500/10 text-green-600 border-green-500/20"
+                : item.claimInfo.claimStatus === "pending"
+                ? "bg-yellow-500/10 text-yellow-600 border-yellow-500/20"
+                : "bg-red-500/10 text-red-600 border-red-500/20"
+            }>
+              {item.claimInfo.claimStatus === "approved" ? "Claim Approved" : 
+               item.claimInfo.claimStatus === "pending" ? "Claim Pending" : "Claim Denied"}
+            </Badge>
+          </Card>
+        )}
+
         {/* Action Buttons */}
         <div className="space-y-3 pt-4">
           {/* Found My Item Button - Only for lost items with approved contact */}
@@ -306,8 +371,8 @@ const ReportDetail = () => {
             </Button>
           )}
 
-          {/* AI Match Button for items not matched */}
-          {item.status === "Active" && (
+          {/* AI Match Button for lost/found items not matched */}
+          {item.status === "Active" && item.type !== "anonymous" && (
             <Button
               onClick={handleStartMatching}
               className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"

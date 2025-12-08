@@ -3,17 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Sparkles, MapPin, Clock, Search, Package, ChevronRight } from "lucide-react";
+import { ArrowLeft, Sparkles, MapPin, Clock, Search, Package, ChevronRight, HelpCircle } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 
 interface ReportItem {
   id: string;
-  type: "lost" | "found";
+  type: "lost" | "found" | "anonymous";
   category: string;
   description: string;
   location: string;
   date: string;
-  status: "Active" | "Matched" | "Recovered";
+  status: "Active" | "Matched" | "Recovered" | "Claimed";
 }
 
 const MyReports = () => {
@@ -62,18 +62,41 @@ const MyReports = () => {
     },
   ];
 
+  const myAnonymousItems: ReportItem[] = [
+    {
+      id: "anon-1",
+      type: "anonymous",
+      category: "Umbrella",
+      description: "Black umbrella with wooden handle",
+      location: "Bus Stop on Main St",
+      date: "2024-03-17",
+      status: "Active",
+    },
+    {
+      id: "anon-2",
+      type: "anonymous",
+      category: "Bag",
+      description: "Blue backpack with laptop inside",
+      location: "Train Station",
+      date: "2024-03-13",
+      status: "Claimed",
+    },
+  ];
+
   const renderStatusBadge = (status: ReportItem["status"]) => {
     switch (status) {
       case "Matched":
         return <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-xs">Matched</Badge>;
       case "Recovered":
         return <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-xs">Recovered</Badge>;
+      case "Claimed":
+        return <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20 text-xs">Claimed</Badge>;
       default:
         return <Badge variant="secondary" className="text-xs">Not Matched</Badge>;
     }
   };
 
-  const renderItemCard = (item: ReportItem, type: "lost" | "found") => (
+  const renderItemCard = (item: ReportItem) => (
     <Card
       key={item.id}
       className="p-4 cursor-pointer transition-all hover:shadow-md active:scale-[0.99]"
@@ -83,8 +106,11 @@ const MyReports = () => {
         <div className="space-y-2 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
             <h3 className="font-semibold">{item.category}</h3>
-            <Badge variant={type === "lost" ? "destructive" : "default"} className="text-xs">
-              {type === "lost" ? "Lost" : "Found"}
+            <Badge 
+              variant={item.type === "lost" ? "destructive" : item.type === "anonymous" ? "outline" : "default"} 
+              className="text-xs"
+            >
+              {item.type === "lost" ? "Lost" : item.type === "anonymous" ? "Anonymous" : "Found"}
             </Badge>
             {renderStatusBadge(item.status)}
           </div>
@@ -138,23 +164,27 @@ const MyReports = () => {
           </div>
         </Card>
 
-        {/* Tabs for Lost/Found */}
-        {(myLostItems.length > 0 || myFoundItems.length > 0) ? (
+        {/* Tabs for Lost/Found/Anonymous */}
+        {(myLostItems.length > 0 || myFoundItems.length > 0 || myAnonymousItems.length > 0) ? (
           <Tabs defaultValue="lost" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="lost" className="flex items-center gap-2">
-                <Search className="w-4 h-4" />
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="lost" className="flex items-center gap-1 text-xs sm:text-sm">
+                <Search className="w-3 h-3 sm:w-4 sm:h-4" />
                 Lost ({myLostItems.length})
               </TabsTrigger>
-              <TabsTrigger value="found" className="flex items-center gap-2">
-                <Package className="w-4 h-4" />
+              <TabsTrigger value="found" className="flex items-center gap-1 text-xs sm:text-sm">
+                <Package className="w-3 h-3 sm:w-4 sm:h-4" />
                 Found ({myFoundItems.length})
+              </TabsTrigger>
+              <TabsTrigger value="anonymous" className="flex items-center gap-1 text-xs sm:text-sm">
+                <HelpCircle className="w-3 h-3 sm:w-4 sm:h-4" />
+                Anon ({myAnonymousItems.length})
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="lost" className="space-y-3">
               {myLostItems.length > 0 ? (
-                myLostItems.map((item) => renderItemCard(item, "lost"))
+                myLostItems.map((item) => renderItemCard(item))
               ) : (
                 <Card className="p-8 text-center">
                   <Search className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
@@ -169,7 +199,7 @@ const MyReports = () => {
 
             <TabsContent value="found" className="space-y-3">
               {myFoundItems.length > 0 ? (
-                myFoundItems.map((item) => renderItemCard(item, "found"))
+                myFoundItems.map((item) => renderItemCard(item))
               ) : (
                 <Card className="p-8 text-center">
                   <Package className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
@@ -177,6 +207,21 @@ const MyReports = () => {
                   <p className="text-sm text-muted-foreground mb-4">Report a found item to help find the owner</p>
                   <Button onClick={() => navigate("/report-found")}>
                     Report Found Item
+                  </Button>
+                </Card>
+              )}
+            </TabsContent>
+
+            <TabsContent value="anonymous" className="space-y-3">
+              {myAnonymousItems.length > 0 ? (
+                myAnonymousItems.map((item) => renderItemCard(item))
+              ) : (
+                <Card className="p-8 text-center">
+                  <HelpCircle className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+                  <h3 className="font-semibold mb-1">No anonymous items reported</h3>
+                  <p className="text-sm text-muted-foreground mb-4">Report an anonymous item you found</p>
+                  <Button variant="outline" onClick={() => navigate("/report-anonymous")}>
+                    Report Anonymous Item
                   </Button>
                 </Card>
               )}
@@ -189,12 +234,15 @@ const MyReports = () => {
             <p className="text-muted-foreground mb-4">
               Report a lost or found item first to use AI matching
             </p>
-            <div className="flex gap-3 justify-center">
+            <div className="flex gap-3 justify-center flex-wrap">
               <Button variant="outline" onClick={() => navigate("/report-lost")}>
                 Report Lost
               </Button>
               <Button onClick={() => navigate("/report-found")}>
                 Report Found
+              </Button>
+              <Button variant="outline" onClick={() => navigate("/report-anonymous")}>
+                Report Anonymous
               </Button>
             </div>
           </Card>
