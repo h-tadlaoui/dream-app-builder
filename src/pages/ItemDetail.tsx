@@ -212,8 +212,8 @@ const ItemDetail = () => {
 
         {/* Action Buttons */}
         <div className="space-y-3">
-          {/* For potential owner - Claim button */}
-          {itemStatus === "Active" && !isFinder && (
+          {/* For potential owner - Claim button (only for anonymous items) */}
+          {itemStatus === "Active" && !isFinder && item.type === "anonymous" && (
             <Button 
               className="w-full" 
               size="lg"
