@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -18,6 +19,7 @@ interface ReportItem {
 
 const MyReports = () => {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("lost");
 
   // Mock user's reports
   const myLostItems: ReportItem[] = [
@@ -166,7 +168,7 @@ const MyReports = () => {
 
         {/* Tabs for Lost/Found/Anonymous */}
         {(myLostItems.length > 0 || myFoundItems.length > 0 || myAnonymousItems.length > 0) ? (
-          <Tabs defaultValue="lost" className="space-y-4">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="lost" className="flex items-center gap-1 text-xs sm:text-sm">
                 <Search className="w-3 h-3 sm:w-4 sm:h-4" />
