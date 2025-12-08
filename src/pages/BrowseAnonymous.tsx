@@ -27,7 +27,7 @@ const BrowseAnonymous = () => {
       location: "Coffee shop on Main Street",
       date: "2024-03-15",
       time: "10:15",
-      status: "Multiple Claims",
+      status: "Active",
     },
   ];
 
