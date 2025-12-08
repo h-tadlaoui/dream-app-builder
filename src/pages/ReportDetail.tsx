@@ -25,6 +25,7 @@ interface ReportItem {
   location: string;
   date: string;
   status: "Active" | "Matched" | "Recovered";
+  image?: string;
   matchInfo?: MatchInfo;
 }
 
@@ -43,6 +44,7 @@ const ReportDetail = () => {
       location: "Central Park",
       date: "2024-03-15",
       status: "Matched",
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop",
       matchInfo: {
         userId: "user-123",
         userName: "John D.",
@@ -60,6 +62,7 @@ const ReportDetail = () => {
       location: "Downtown Coffee Shop",
       date: "2024-03-14",
       status: "Matched",
+      image: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=400&h=300&fit=crop",
       matchInfo: {
         userId: "user-456",
         userName: "Sarah M.",
@@ -75,6 +78,7 @@ const ReportDetail = () => {
       location: "Gym on 5th Ave",
       date: "2024-03-12",
       status: "Active",
+      image: "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=400&h=300&fit=crop",
     },
     {
       id: "found-1",
@@ -84,6 +88,7 @@ const ReportDetail = () => {
       location: "City Library",
       date: "2024-03-16",
       status: "Active",
+      image: "https://images.unsplash.com/photo-1582139329536-e7284fece509?w=400&h=300&fit=crop",
     },
   ];
 
@@ -171,6 +176,17 @@ const ReportDetail = () => {
       </header>
 
       <div className="container mx-auto px-4 py-6 space-y-4">
+        {/* Item Image */}
+        {item.image && (
+          <Card className="overflow-hidden">
+            <img 
+              src={item.image} 
+              alt={item.category}
+              className="w-full h-48 object-cover"
+            />
+          </Card>
+        )}
+
         {/* Item Type & Status */}
         <Card className="p-4">
           <div className="flex items-center gap-2 flex-wrap mb-4">
