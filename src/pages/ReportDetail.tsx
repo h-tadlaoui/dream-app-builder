@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Sparkles, MapPin, Clock, CheckCircle2, XCircle, User, Mail, Phone, PartyPopper } from "lucide-react";
+import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import AIProcessing from "@/components/AIProcessing";
 
@@ -148,7 +149,10 @@ const ReportDetail = () => {
   };
 
   const handleFoundMyItem = () => {
-    navigate("/confirm-recovery");
+    toast.success("Congratulations!", {
+      description: "Your item has been marked as recovered"
+    });
+    navigate("/history");
   };
 
   const renderStatusBadge = (status: ReportItem["status"]) => {
