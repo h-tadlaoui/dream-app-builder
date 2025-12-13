@@ -17,7 +17,7 @@ const loginSchema = z.object({
 const signupSchema = z.object({
   email: z.string().email("Please enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  fullName: z.string().min(2, "Name must be at least 2 characters"),
+  fullName: z.string().min(2, "Username must be at least 2 characters"),
   phone: z.string().min(10, "Please enter a valid phone number"),
 });
 
@@ -152,13 +152,13 @@ const Auth = () => {
             {!isLogin && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="fullName">Username</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="fullName"
                       type="text"
-                      placeholder="John Doe"
+                      placeholder="johndoe"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       className="pl-10"
