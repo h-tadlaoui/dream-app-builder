@@ -6,20 +6,29 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
+import { Mail, Lock, ArrowRight, Loader2, User, Phone } from "lucide-react";
 import { z } from "zod";
 
-const authSchema = z.object({
+const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+const signupSchema = z.object({
+  email: z.string().email("Please enter a valid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  fullName: z.string().min(2, "Name must be at least 2 characters"),
+  phone: z.string().min(10, "Please enter a valid phone number"),
 });
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string; fullName?: string; phone?: string }>({});
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -42,12 +51,17 @@ const Auth = () => {
   }, [navigate]);
 
   const validateForm = () => {
-    const result = authSchema.safeParse({ email, password });
+    const schema = isLogin ? loginSchema : signupSchema;
+    const data = isLogin 
+      ? { email, password } 
+      : { email, password, fullName, phone };
+    
+    const result = schema.safeParse(data);
     if (!result.success) {
-      const fieldErrors: { email?: string; password?: string } = {};
+      const fieldErrors: { email?: string; password?: string; fullName?: string; phone?: string } = {};
       result.error.errors.forEach((err) => {
-        if (err.path[0] === "email") fieldErrors.email = err.message;
-        if (err.path[0] === "password") fieldErrors.password = err.message;
+        const field = err.path[0] as keyof typeof fieldErrors;
+        fieldErrors[field] = err.message;
       });
       setErrors(fieldErrors);
       return false;
@@ -78,6 +92,10 @@ const Auth = () => {
           password,
           options: {
             emailRedirectTo: redirectUrl,
+            data: {
+              full_name: fullName,
+              phone: phone,
+            },
           },
         });
         if (error) throw error;
@@ -131,6 +149,46 @@ const Auth = () => {
 
           {/* Form */}
           <form onSubmit={handleAuth} className="space-y-4">
+            {!isLogin && (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="fullName"
+                      type="text"
+                      placeholder="John Doe"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  {errors.fullName && (
+                    <p className="text-destructive text-xs">{errors.fullName}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="+1 234 567 8900"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  {errors.phone && (
+                    <p className="text-destructive text-xs">{errors.phone}</p>
+                  )}
+                </div>
+              </>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
