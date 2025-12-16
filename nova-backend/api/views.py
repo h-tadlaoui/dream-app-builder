@@ -93,12 +93,15 @@ class ItemViewSet(viewsets.ModelViewSet):
     
     def _index_item_in_ai(self, item):
         """Index item in AI service."""
-        ai_url = f"{settings.AI_SERVICE_URL}/items/add"
+        # Determine endpoint based on item type
+        if item.type == 'lost':
+            ai_url = f"{settings.AI_SERVICE_URL}/add/lost_item"
+        else:
+            ai_url = f"{settings.AI_SERVICE_URL}/add/found_item"
         
         # Prepare data for AI service
         data = {
             'item_id': str(item.id),
-            'item_type': item.type,
             'description': item.description or '',
         }
         
