@@ -1,3 +1,10 @@
+import os
+import django
+
+# Setup Django environment
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nova_project.settings')
+django.setup()
+
 from api.models import Item, Match, Notification
 from api.views import MatchViewSet
 import json
