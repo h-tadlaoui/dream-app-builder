@@ -16,7 +16,7 @@ services:
       - ./nova-backend/media:/app/media
     environment:
       - SECRET_KEY=django-insecure-change-me-prod-key
-      - DEBUG=False
+      - DEBUG=True
       - ALLOWED_HOSTS=*
       - AI_SERVICE_URL=http://ai_service:3300
     depends_on:
