@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -48,19 +48,12 @@ const ReportDetail = () => {
 
   useEffect(() => {
     const fetchItem = async () => {
-      if (!id) return;
+      if (!id) {
+        setLoading(false);
+        return;
+      }
       try {
-        // Import getItem dynamically or assume it's imported at top
-        // But cleaner to add import at top. 
-        // For this block, I will assume I added the import in a separate edit or rely on the user to compile? 
-        // No, I should do a full file replacement or multiple chunks.
-        // Let's us replace_file_content to replace the whole logic block.
-        const { getItem } = await import("@/hooks/useItems");
         const data = await getItem(id);
-        // Transform API data to ReportItem interface if needed, or update interface
-        // For now, cast it or map it.
-        // The API returns 'Item' type. ReportDetail expects 'ReportItem'.
-        // Let's cast for now to get it working, mapping fields as best as possible.
         const mappedItem: ReportItem = {
           id: data.id.toString(),
           type: data.type,
@@ -68,10 +61,9 @@ const ReportDetail = () => {
           description: data.description || "",
           location: data.location,
           date: data.date,
-          status: data.status as any, // Cast status
+          status: data.status as any,
           image: data.image_url || undefined,
-          // matchInfo and claimInfo are likely missing from basic item API
-          // We will handle them later or leave undefined
+          // Basic item data doesn't include match/claim info yet, leaving undefined
         };
         setItem(mappedItem);
       } catch (error) {
