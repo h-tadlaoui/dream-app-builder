@@ -27,7 +27,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy application code
 COPY ai_service/ ./ai_service/
-COPY data/ ./data/
+
 
 # Create necessary directories
 RUN mkdir -p data/indexes data/metadata
